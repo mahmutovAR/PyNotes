@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Note search</h3>
+<form method="POST" action="{% url 'search_note' %}">
+    {% csrf_token %}
+    <p>
+        <label>Enter part of the note title or text</label><br>
+        <input type="text"
+               name="search_for" />
+        <input type="submit"
+               value="Search">
+</form>
+{% if search_object %}
+<p>The results for <strong>{{ search_object }}</strong></p>
+<h5>Found in the title:</h5>
+{% if title_results %}
+<ul>
+    {% for result in title_results %}
+    <li>
+        <a href="/note/view/{{ result.get_note_id  }}">
+            {{ result.get_note_title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No any data</p>
+{% endif %}
+
+<h5>Found in the text:</h5>
+{% if text_results %}
+<ul>
+    {% for result in text_results %}
+    <li>
+        <a href="/note/view/{{ result.get_note_id  }}">
+            {{ result.get_note_title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No any data</p>
+{% endif %}
+{% endif %}
+{% endblock %}

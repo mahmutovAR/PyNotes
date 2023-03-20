@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Edit current note</h3>
+<form method="POST">
+    {% csrf_token %}
+    <p>
+        <label>Enter NEW label</label><br>
+        <input type="text" name="note_title" value="{{ editable_note.get_note_title }}"/>
+    </p>
+    <p>
+        <label>Enter NEW text</label><br>
+        <input type="text" name="note_text" value="{{ editable_note.get_note_text }}"/>
+    </p>
+    <input type="submit" value="Save Changes">
+</form>
+{% endblock %}

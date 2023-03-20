@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Welcome to <em>WebPyNotes</em></h3>
+<p>The application provides the following functionality:</p>
+<li>Creating plain text notes with plain text editor</li>
+<li>Saving notes to the MongoDB</li>
+<li>Listing previously created notes</li>
+<li>Editing previously created notes</li>
+<p><br>Current database contains <strong>{{ total_notes }}</strong> note(s)</p>
+{% endblock %}

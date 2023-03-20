@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create note and save to DB</h1>
+<form action="{% url 'create_note' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in new_note_data %}
+    <div>
+        {{ field.label_tag }}
+    </div>
+    <div>
+        {{field}}
+    </div>
+    {% endfor %}
+
+    {% if note_already_exists %}
+    <h3>A note with the entered title already exists</h3>
+    <a href="{{ note_already_exists.get_absolute_url }}">{{ note_already_exists }}</a>
+    <p><strong>Text:</strong><br>{{ note_already_exists.note_text }}</p>
+    {% endif %}
+
+    <button>
+        Save note to DB
+    </button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Note(s) in database</h3>
+{% if all_db_notes %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Note's title</th>
+        <th>Functions</th>
+    </tr>
+    {% for note in all_db_notes %}
+    <tr>
+        <td>{{ forloop.counter }}.</td>
+        <td><a href="/note/view/{{ note.get_note_id }}">{{ note.get_note_title }}</a></td>
+        <td>(<a href="/note/edit/{{ note.get_note_id }}"> edit </a> |
+            <a href="/note/delete/{{ note.get_note_id }}"> delete </a>)</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>No notes in current database</p>
+{% endif %}
+{% endblock %}
