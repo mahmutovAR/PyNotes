@@ -3,9 +3,12 @@
 {% block content %}
 <h3>Note content:</h3>
 
-<p><a href="/note/edit/{{ note_content.get_note_id }}">Edit</a> |
-    <a href="/note/delete/{{ note_content.get_note_id }}">Delete</a></p>
+<p><a href="/webnotes/edit/{{ note_content.get_note_id }}/">Edit</a> |
+    <a href="/webnotes/delete/{{ note_content.get_note_id }}/">Delete</a></p>
 <p><strong>Title:</strong><br> {{ note_content.get_note_title }}</p>
+
+{% if note_content.get_note_text %}
 <p><strong>Text:</strong><br> {{ note_content.get_note_text }}</p>
+{% endif %}
 
 {% endblock %}

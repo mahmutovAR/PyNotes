@@ -5,13 +5,22 @@
 <form method="POST">
     {% csrf_token %}
     <p>
-        <label>Enter NEW label</label><br>
+        <label>Edit title:</label><br>
         <input type="text" name="note_title" value="{{ editable_note.get_note_title }}"/>
     </p>
     <p>
-        <label>Enter NEW text</label><br>
+        <label>Edit text:</label><br>
         <input type="text" name="note_text" value="{{ editable_note.get_note_text }}"/>
     </p>
+
+    {% if note_title_exists %}
+    <div class="alert alert-warning" role="alert">
+  Note with entered title already exists
+    </div>
+    <a href="/webnotes/view/{{ note_title_exists.get_note_id }}/">{{ note_title_exists.get_note_title }}</a>
+    <p><strong>Text:</strong><br>{{ note_title_exists.get_note_text }}</p>
+    {% endif %}
+
     <input type="submit" value="Save Changes">
 </form>
 {% endblock %}

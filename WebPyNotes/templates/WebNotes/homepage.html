@@ -7,5 +7,11 @@
 <li>Saving notes to the MongoDB</li>
 <li>Listing previously created notes</li>
 <li>Editing previously created notes</li>
+{% if total_notes %}
 <p><br>Current database contains <strong>{{ total_notes }}</strong> note(s)</p>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  No notes in current database
+</div>
+{% endif %}
 {% endblock %}

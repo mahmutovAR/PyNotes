@@ -1,134 +1,222 @@
-from WebNotes_config import parse_configuration_file
+from sys import argv as sys_argv
+
+from WebNotes_config import NotesTemplates, NoteContent, NOTES_DB, TEST_DB, NotesMSG
 from bson.objectid import ObjectId
-from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator
+from django.db import DatabaseError
 from django.shortcuts import render
-from pymongo import MongoClient
 
-from .forms import NewNoteForm
+if 'test' in sys_argv:
+    DATABASE_ID = TEST_DB
+else:
+    DATABASE_ID = NOTES_DB
 
-
-config_data = parse_configuration_file()
-mongo_client = MongoClient(config_data.get_database_client_host())
-db_name = mongo_client[config_data.get_database_name()]
-USER_NOTES = db_name['default_user']
-
-
-class NoteContent:
-    __slots__ = ['__note_id', '__note_title', '__note_text']
-
-    def __init__(self, note_data):
-        self.__note_id = note_data['_id']
-        self.__note_title = note_data['_title']
-        self.__note_text = note_data['_text']
-
-    def get_note_id(self):
-        return self.__note_id
-
-    def get_note_title(self):
-        return self.__note_title
-
-    def get_note_text(self):
-        return self.__note_text
+from .forms import TextNoteForm
 
 
 def homepage(request):
-    """This is homepage of the website.
-    The number of passwords from each category (Card, Login, Note) and
-    number of available data-files are displayed."""
-    notes_in_database = USER_NOTES.count_documents({})
-    context_data = {'total_notes': notes_in_database}
-    return render(request, 'homepage.html', context=context_data)
+    """This is homepage of the web application.
+    The main functions and the number of saved notes are displayed."""
+    total_notes = db_count_notes()
+    context_data = {'total_notes': total_notes}
+    return render(request, NotesTemplates.get_homepage_template(), context=context_data)
 
 
 def create_note(request):
-    """Displays page with creating form. Creates new note and saves it in the database."""
+    """Displays page with creating form.
+    If entered data is valid and note with entered title doesn't exist, inserts note into the collection.
+    Otherwise, an error message will be displayed."""
+    db_count_notes()
     if request.method == 'POST':
-        new_note = NewNoteForm(request.POST)
-        new_note_title = request.POST.get("note_title")
-        new_note_text = request.POST.get("note_text")
+        new_note = TextNoteForm(request.POST)
         if new_note.is_valid():
             new_note_title = new_note.cleaned_data['note_title']
-            note_already_exists = USER_NOTES.find_one({"note_title": new_note_title})
+            new_note_text = new_note.cleaned_data['note_text']
+            note_already_exists = db_find_single_note_data({'_title': new_note_title})
             if note_already_exists:
                 context_data = {'new_note_data': new_note,
-                                'note_already_exists': note_already_exists}
-                return render(request, 'note_create.html', context=context_data)
-        USER_NOTES.insert_one({'_title': new_note_title, '_text': new_note_text}).inserted_id
-        return HttpResponseRedirect('/all_notes')
-    else:
-        new_note = NewNoteForm()
+                                'note_title_exists': NoteContent(note_already_exists)}
+                return render(request, NotesTemplates.get_create_template(), context=context_data)
 
-    context_data = {'new_note_data': new_note,
-                    'note_title_exists': None}
-    return render(request, 'note_create.html', context=context_data)
+            db_insert_note({'_title': new_note_title, '_text': new_note_text})
+            total_notes = db_count_notes()
+            context_data = {'app_message': NotesMSG.get_msg_note_inserted(),
+                            'total_notes': total_notes}
+            return render(request, NotesTemplates.get_homepage_template(), context=context_data)
+        else:
+            note_form_errors = [new_note.errors[field].as_text()
+                                for field in new_note.errors]
+
+            context_data = {'app_error': note_form_errors,
+                            'new_note_data': new_note}
+            return render(request, NotesTemplates.get_create_template(), context=context_data)
+    else:
+        new_note = TextNoteForm()
+    context_data = {'new_note_data': new_note}
+    return render(request, NotesTemplates.get_create_template(), context=context_data)
 
 
 def view_all_notes(request):
+    """Displays list of all notes from collection."""
+    total_notes = db_count_notes()
+    all_notes = db_get_all_notes_data()
     all_notes_from_db = [NoteContent(note_from_db)
-                         for note_from_db in USER_NOTES.find({})]
+                         for note_from_db in all_notes]
+    notes_in_db = get_pagination_object(request, all_notes_from_db, 5)
 
-    context_data = {'all_db_notes': all_notes_from_db}
-    return render(request, 'notes_all.html', context=context_data)
+    context_data = {'total_notes': total_notes,
+                    'notes_in_db': notes_in_db}
+    return render(request, NotesTemplates.get_all_notes_template(), context=context_data)
 
 
-def view_note_content(request, record_id):
-    query_note = USER_NOTES.find_one({'_id': ObjectId(record_id)})
+def get_pagination_object(request, input_data: list, rows_num: int) -> list or None:
+    """Converts inputted data into pagination object."""
+    if input_data:
+        paginator = Paginator(input_data, rows_num)
+        page_number = request.GET.get("page")
+        return paginator.get_page(page_number)
+    else:
+        return None
+
+
+def view_note_content(request, data_id: str):
+    """Displays document content with given ID."""
+    query_note = db_find_single_note_data({'_id': ObjectId(data_id)})
     context_data = {'note_content': NoteContent(query_note)}
-    return render(request, 'note_content.html', context=context_data)
+    return render(request, NotesTemplates.get_note_content_template(), context=context_data)
 
 
-def edit_note(request, record_id):
-    """Displays page with form for editing description of uploaded earlier data-file."""
-    note_id = {'_id': ObjectId(record_id)}
-    note_to_edit = USER_NOTES.find_one(note_id)
-    if note_to_edit:
-        if request.method == 'POST':
-            new_note_title = request.POST.get('note_title')
-            new_note_text = request.POST.get('note_text')
+def edit_note(request, data_id: str):
+    """Displays page with form for editing note data.
+    If edited data is valid and new title doesn't exist, updates note in the collection.
+    Otherwise, an error message will be displayed."""
+    note_id = {'_id': ObjectId(data_id)}
+    note_to_edit = db_find_single_note_data(note_id)
+    current_note = note_to_edit['_id']
+    if request.method == 'POST':
+        new_note_data = TextNoteForm(request.POST)
+        if new_note_data.is_valid():
+            new_note_title = new_note_data.cleaned_data['note_title']
+            new_note_text = new_note_data.cleaned_data['note_text']
+            note_already_exists = db_find_single_note_data({'_title': new_note_title})
+            if not note_already_exists or note_already_exists['_id'] == current_note:
+                db_update_note(note_id, {"$set": {'_title': new_note_title,
+                                                  '_text': new_note_text}})
+                total_notes = db_count_notes()
+                context_data = {'app_message': NotesMSG.get_msg_note_edited(),
+                                'total_notes': total_notes}
+                return render(request, NotesTemplates.get_homepage_template(), context=context_data)
 
-            edit_title = {"$set": {"_title": new_note_title}}
-            USER_NOTES.update_one(note_id, edit_title)
-
-            edit_text = {"$set": {"_text": new_note_text}}
-            USER_NOTES.update_one(note_id, edit_text)
-            return HttpResponseRedirect('/all_notes')
+            elif note_already_exists['_id'] != current_note:
+                context_data = {'editable_note': NoteContent(note_to_edit),
+                                'note_title_exists': NoteContent(note_already_exists)}
+                return render(request, NotesTemplates.get_edit_note_template(), context=context_data)
         else:
-            context_data = {'editable_note': NoteContent(note_to_edit)}
-            return render(request, 'note_edit.html', context=context_data)
-    else:
-        return render(request, 'error.html', context='No data found..def edit_note')
+            note_form_errors = [new_note_data.errors[field].as_text()
+                                for field in new_note_data.errors]
+            context_data = {'app_error': note_form_errors,
+                            'editable_note': NoteContent(note_to_edit)}
+            return render(request, NotesTemplates.get_edit_note_template(), context=context_data)
+
+    context_data = {'editable_note': NoteContent(note_to_edit)}
+    return render(request, NotesTemplates.get_edit_note_template(), context=context_data)
 
 
-def delete_note(request, record_id):
-    note_id = {'_id': ObjectId(record_id)}
-    note_to_delete = USER_NOTES.find_one(note_id)
-    if note_to_delete:
-        USER_NOTES.delete_one(note_id)
-        return HttpResponseRedirect('/all_notes')
-    else:
-        return render(request, 'error.html', context='No data found..def delete_note')
+def delete_note(request, data_id: str):
+    """Removes document with given ID from the collection."""
+    db_delete_note({'_id': ObjectId(data_id)})
+    total_notes = db_count_notes()
+    context_data = {'app_message': NotesMSG.get_msg_note_deleted(),
+                    'total_notes': total_notes}
+    return render(request, NotesTemplates.get_homepage_template(), context=context_data)
 
 
 def search_note(request):
-    """Displays page with searching form. Searches password in the database and returns result grouped by category."""
-    search_object = None
+    """Displays page with searching form.
+    Searches for the given expression in the titles and texts of the notes in the collection
+    and returns the result grouped by category."""
+    query_object = None
+    found_in_titles = None
+    found_in_texts = None
+    total_notes = db_count_notes()
+
     if request.method == 'POST':
-        search_object = request.POST.get('search_for')
-    if search_object:
-        search_title = USER_NOTES.find({'_title': {"$regex": f'.{search_object}.'}})
-        search_text = USER_NOTES.find({'_text': {"$regex": f'.{search_object}.'}})
+        query_object = request.POST.get('search_for')
+        found_in_titles = db_find_notes_by_query({'_title': {"$regex": query_object, '$options': 'im'}})
 
-        all_found_titles = [NoteContent(found_note)
-                            for found_note in search_title]
+        found_in_texts = db_find_notes_by_query({'_text': {"$regex": query_object, '$options': 'im'}})
 
-        all_found_texts = [NoteContent(found_note)
-                           for found_note in search_text]
+    context_data = {'total_notes': total_notes,
+                    'query_object': query_object,
+                    'title_results': found_in_titles,
+                    'text_results': found_in_texts}
+    return render(request, NotesTemplates.get_search_note_template(), context=context_data)
 
+
+def db_count_notes() -> int:
+    """Additional function, counts documents in the collection."""
+    try:
+        notes_in_database = DATABASE_ID.count_documents({})
+    except Exception:
+        raise DatabaseError
     else:
-        all_found_titles = None
-        all_found_texts = None
+        return notes_in_database
 
-    context_data = {'search_object': search_object,
-                    'title_results': all_found_titles,
-                    'text_results': all_found_texts}
-    return render(request, 'note_search.html', context=context_data)
+
+def db_find_single_note_data(query_obj: dict) -> dict:
+    """Additional function, finds one document in the collection by given ID."""
+    try:
+        found_in_database = DATABASE_ID.find_one(query_obj)
+    except Exception:
+        raise DatabaseError
+    return found_in_database
+
+
+def db_insert_note(input_data: dict) -> None:
+    """Additional function, inserts document into the collection."""
+    try:
+        DATABASE_ID.insert_one(input_data)
+    except Exception:
+        raise DatabaseError
+
+
+def db_get_all_notes_data() -> 'Cursor object':
+    """Additional function, returns all documents from the collection."""
+    try:
+        all_notes = DATABASE_ID.find({})
+    except Exception:
+        raise DatabaseError
+    return all_notes
+
+
+def db_update_note(input_id: dict, input_data: dict) -> None:
+    """Additional function, updates document in the collection."""
+    try:
+        DATABASE_ID.update_one(input_id, input_data)
+    except Exception:
+        raise DatabaseError
+
+
+def db_delete_note(input_data: dict) -> None:
+    """Additional function, deletes document from the collection."""
+    try:
+        DATABASE_ID.find_one_and_delete(input_data)
+    except Exception:
+        raise DatabaseError
+
+
+def db_find_notes_by_query(query_obj: dict) -> list:
+    """Additional function, finds documents in the collection by given expression."""
+    try:
+        found_in_database = DATABASE_ID.find(query_obj)
+    except Exception:
+        raise DatabaseError
+    else:
+        query_result = [NoteContent(found_note)
+                        for found_note in found_in_database]
+    return query_result
+
+
+def web_notes_server_error(request):
+    """Renders page with Server Error message."""
+    return render(request, NotesTemplates.get_server_error_template(), status=500)

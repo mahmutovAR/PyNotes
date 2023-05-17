@@ -1,25 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Note(s) in database</h3>
-{% if all_db_notes %}
+{% if notes_in_db %}
+<h3>Note(s) in database {{ total_notes }}</h3>
 <table>
     <tr>
         <th>ID</th>
         <th>Note's title</th>
         <th>Functions</th>
     </tr>
-    {% for note in all_db_notes %}
+    {% for note in notes_in_db %}
     <tr>
         <td>{{ forloop.counter }}.</td>
-        <td><a href="/note/view/{{ note.get_note_id }}">{{ note.get_note_title }}</a></td>
-        <td>(<a href="/note/edit/{{ note.get_note_id }}"> edit </a> |
-            <a href="/note/delete/{{ note.get_note_id }}"> delete </a>)</td>
+        <td><a href="/webnotes/view/{{ note.get_note_id }}/">{{ note.get_note_title }}</a></td>
+        <td>(<a href="/webnotes/edit/{{ note.get_note_id }}/"> edit </a> |
+            <a href="/webnotes/delete/{{ note.get_note_id }}/"> delete </a>)</td>
     </tr>
     {% endfor %}
 </table>
 
+<br>
+<div class="pagination">
+    <span class="step-links">
+        {% if notes_in_db.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ notes_in_db.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ notes_in_db.number }} of {{ notes_in_db.paginator.num_pages }}
+        </span>
+
+
+        {% if notes_in_db.has_next %}
+            <a href="?page={{ notes_in_db.next_page_number }}">next</a>
+            <a href="?page={{ notes_in_db.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
 {% else %}
-<p>No notes in current database</p>
+<div class="alert alert-dark" role="alert">
+  No notes in current database, nothing to display
+</div>
 {% endif %}
 {% endblock %}

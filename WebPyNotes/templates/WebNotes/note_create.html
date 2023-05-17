@@ -12,15 +12,20 @@
         {{field}}
     </div>
     {% endfor %}
-
-    {% if note_already_exists %}
-    <h3>A note with the entered title already exists</h3>
-    <a href="{{ note_already_exists.get_absolute_url }}">{{ note_already_exists }}</a>
-    <p><strong>Text:</strong><br>{{ note_already_exists.note_text }}</p>
+    
+    {% if note_title_exists %}
+    <div class="alert alert-warning" role="alert">
+  Note with entered title already exists<br>
+        If You leave this page, all entered data will be lost.
+</div>
+    <a href="/webnotes/view/{{ note_title_exists.get_note_id }}/">{{ note_title_exists.get_note_title }}</a>
+    (<a href="/webnotes/edit/{{ note_title_exists.get_note_id }}/"> edit </a> |
+            <a href="/webnotes/delete/{{ note_title_exists.get_note_id }}/"> delete </a>)
+    <p><br>{{ note_title_exists.get_note_text }}</p>
     {% endif %}
 
     <button>
-        Save note to DB
+        Save note
     </button>
 </form>
 {% endblock %}

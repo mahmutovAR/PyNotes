@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if total_notes %}
 <h3>Note search</h3>
 <form method="POST" action="{% url 'search_note' %}">
     {% csrf_token %}
@@ -11,34 +12,56 @@
         <input type="submit"
                value="Search">
 </form>
-{% if search_object %}
-<p>The results for <strong>{{ search_object }}</strong></p>
-<h5>Found in the title:</h5>
+{% if query_object %}
+<p>The results for <strong>{{ query_object }}</strong></p>
 {% if title_results %}
+    <div class="alert alert-success" role="alert">
+  Found in the title:
+</div>
 <ul>
     {% for result in title_results %}
+    <!--    TODO: add scroll bar-->
+
     <li>
-        <a href="/note/view/{{ result.get_note_id  }}">
+        <a href="/webnotes/view/{{ result.get_note_id  }}/">
             {{ result.get_note_title }}</a>
     </li>
     {% endfor %}
 </ul>
 {% else %}
-<p>No any data</p>
+<div class="alert alert-dark" role="alert">
+  No results in titles were found
+</div>
 {% endif %}
 
-<h5>Found in the text:</h5>
 {% if text_results %}
+<div class="alert alert-success" role="alert">
+  Found in the text:
+</div>
+
 <ul>
     {% for result in text_results %}
+    <!--    TODO: add scroll bar-->
+
     <li>
-        <a href="/note/view/{{ result.get_note_id  }}">
+        <a href="/webnotes/view/{{ result.get_note_id  }}/">
             {{ result.get_note_title }}</a>
     </li>
     {% endfor %}
 </ul>
 {% else %}
-<p>No any data</p>
+<div class="alert alert-dark" role="alert">
+  No results in texts were found
+</div>
+
+
 {% endif %}
 {% endif %}
+
+{% else %}
+<div class="alert alert-dark" role="alert">
+  No notes in current database, nothing to search
+</div>
+{% endif %}
+
 {% endblock %}
