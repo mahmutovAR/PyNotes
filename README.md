@@ -4,13 +4,10 @@ This web application provides following functionality to the user:
 * saving notes to the database
 - listing previously created notes
 * editing previously created notes
-
-[//]: # (TODO: plain text editor)
 ***
 
 
 ## Installation
-[//]: # (TODO: Installation guide)
 ### Install MongoDB from Docker Hub
 `docker pull mongo`  
 ### Start a mongo server, for example use next settings:
