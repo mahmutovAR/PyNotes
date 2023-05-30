@@ -1,11 +1,6 @@
 Django
-Flask
 pymongo
 pytz
 django-bootstrap-v5
 configparser
-connexion
-connexion[swagger-ui]
-djangorestframework
 mongomock
-selenium

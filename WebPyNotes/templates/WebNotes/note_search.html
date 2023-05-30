@@ -20,8 +20,6 @@
 </div>
 <ul>
     {% for result in title_results %}
-    <!--    TODO: add scroll bar-->
-
     <li>
         <a href="/webnotes/view/{{ result.get_note_id  }}/">
             {{ result.get_note_title }}</a>
@@ -41,8 +39,6 @@
 
 <ul>
     {% for result in text_results %}
-    <!--    TODO: add scroll bar-->
-
     <li>
         <a href="/webnotes/view/{{ result.get_note_id  }}/">
             {{ result.get_note_title }}</a>

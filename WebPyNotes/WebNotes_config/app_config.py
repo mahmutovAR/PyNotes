@@ -116,7 +116,6 @@ def verify_config_settings(config_file: 'ConfigParser object') -> 'ConfigData ob
             display_default_settings()
             return DefaultConfigData()
         if not (db_host.startswith('mongodb://') or db_host.startswith('mongodb+srv://')):
-            # TODO: try to connect to a deployment?
             display_default_settings()
             return DefaultConfigData()
 
