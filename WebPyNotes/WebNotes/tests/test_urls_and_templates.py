@@ -1,23 +1,28 @@
-from WebNotes_config import NotesTemplates, NotesURLs, TEST_DB
+from WebNotes_settings import NotesTemplates, NotesURLs, NotesAPI
 from django.urls import resolve
 
 from . import MongoTestCase
 from ..views import *
 
+API_URL = NotesAPI.get_api_url_for_views()
+TEST_API_URL = NotesAPI.get_api_url_for_tests()
+
 
 class UrlsAnDTemplatesTest(MongoTestCase):
     """Tests URLS and used templates."""
     def setUp(self):
-        TEST_DB.insert_one({'_title': 'test note', '_text': 'just test note text'})
-        self.test_note = TEST_DB.find_one()
-        self.test_note_id = str(self.test_note['_id'])
+        requests_post(TEST_API_URL, json={'test_notes_num': 1})
+        api_response = requests_get(API_URL)
+        all_notes = api_response.json()
+        test_note = all_notes['notes'][0]
+        self.test_note_id = test_note['id']
 
         self.home_url = NotesURLs.get_home_url()
         self.create_url = NotesURLs.get_create_url()
         self.all_notes_url = NotesURLs.get_all_notes_url()
         self.note_content_url = NotesURLs.get_note_content_url()
         self.note_content_testing_template = NotesURLs.get_note_content_url().replace('<data_id>',
-                                                                                           self.test_note_id)
+                                                                                      self.test_note_id)
         self.edit_note_url = NotesURLs.get_edit_note_url()
         self.edit_note_testing_template = NotesURLs.get_edit_note_url().replace('<data_id>', self.test_note_id)
         self.delete_note_url = NotesURLs.get_delete_note_url()
@@ -31,7 +36,7 @@ class UrlsAnDTemplatesTest(MongoTestCase):
         self.search_note_template = NotesTemplates.get_search_note_template()
 
     def tearDown(self) -> None:
-        TEST_DB.delete_many({})
+        requests_delete(TEST_API_URL)
 
     def test_homepage(self):
         """Tests the match between the link and the template used for the homepage."""

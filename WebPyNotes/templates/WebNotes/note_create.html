@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Create note and save to DB</h1>
+
+<h1>Create note</h1>
 <form action="{% url 'create_note' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in new_note_data %}
@@ -18,14 +19,16 @@
   Note with entered title already exists<br>
         If You leave this page, all entered data will be lost.
 </div>
-    <a href="/webnotes/view/{{ note_title_exists.get_note_id }}/">{{ note_title_exists.get_note_title }}</a>
-    (<a href="/webnotes/edit/{{ note_title_exists.get_note_id }}/"> edit </a> |
-            <a href="/webnotes/delete/{{ note_title_exists.get_note_id }}/"> delete </a>)
-    <p><br>{{ note_title_exists.get_note_text }}</p>
+    <a href="/webnotes/view/{{ note_title_exists.id }}/">{{ note_title_exists.title }}</a>
+    (<a href="/webnotes/edit/{{ note_title_exists.id }}/"> edit </a> |
+            <a href="/webnotes/delete/{{ note_title_exists.id }}/"> delete </a>)
+    <p><br>{{ note_title_exists.text }}</p>
     {% endif %}
 
     <button>
         Save note
     </button>
+
 </form>
+
 {% endblock %}

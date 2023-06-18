@@ -1,11 +1,11 @@
 from os.path import join as os_path_join
+from pathlib import Path
+from WebNotes_settings import NotesConfig
 
-from WebNotes_config import NotesConfig
-
-SECRET_KEY = NotesConfig.get_django_password()
+BASE_DIR = Path(__file__).resolve().parents[1]
+SECRET_KEY = NotesConfig.get_django_secret_key()
 
 DEBUG = False
-# TODO: ALLOWED_HOSTS
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
 INSTALLED_APPS = [
@@ -31,7 +31,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'WebPyNotes.urls'
 
-templates_dir = NotesConfig.get_templates_dir()
+templates_dir = os_path_join(BASE_DIR, 'templates', 'WebNotes')
 
 TEMPLATES = [
     {
@@ -74,9 +74,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os_path_join(NotesConfig.get_application_dir(), 'static'),
+    os_path_join(BASE_DIR, 'static'),
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
