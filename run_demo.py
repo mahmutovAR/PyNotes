@@ -4,6 +4,8 @@ from os import environ
 from os import system as os_system
 from os.path import join as os_path_join
 from pathlib import Path
+from time import sleep
+from webbrowser import open_new_tab as open_url
 
 from django.core.management.utils import get_random_secret_key
 
@@ -29,7 +31,7 @@ def start_container():
 def app_runserver():
     """Runs the WebPyNotes application."""
     os_chdir(RUNSERVER_DIR)
-    command = 'python manage.py runserver'
+    command = 'python3 manage.py runserver'
     os_system(command)
 
 
@@ -54,6 +56,8 @@ if __name__ == '__main__':
     start_container_process.start()
     run_api_process.start()
     app_runserver_process.start()
+    sleep(1)
+    open_url('http://127.0.0.1:8000/webnotes/')
     # TODO: how stop all processes?
     start_container_process.join()
     run_api_process.join()

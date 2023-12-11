@@ -1,0 +1,143 @@
+/* pynotes styling */
+
+.pynotes_body {
+  width:920px;
+  background-color: #0d1117;
+}
+
+.pynotes_header, .pynotes_footer {
+  background-color: #0c1929;
+}
+
+.pynotes_footer {
+  color: #b2b2b2;
+}
+
+.pynotes_nav {
+  background-color: #162f44;
+}
+
+.pynotes_main {
+  background-color: #202c3a;
+}
+
+.pynotes_success, .pynotes_attention, .pynotes_error {
+  text-align: start;
+  line-height: 1.5em;
+  width: 30em;
+  height: auto;
+  border: none;
+  color: #000000;
+}
+
+.pynotes_success {
+  background-color: #44b78b;
+  width: 15em;
+}
+
+.pynotes_attention {
+  background-color: #ffc754;
+}
+
+.pynotes_error {
+  background-color: #fd7b65;
+  width: 20em;
+}
+
+input.pynotes_form, textarea.pynotes_form {
+  width: 30em;
+  background-color: inherit;
+}
+
+textarea.pynotes_form {
+  height: 12rem;
+}
+
+input.pynotes_form:focus,
+textarea.pynotes_form:focus {
+  background-color: inherit;
+}
+
+input.pynotes_form::placeholder,
+textarea.pynotes_form::placeholder {
+  color: #005b9a;
+}
+
+.pynotes_link {
+  color: #29a9ff;
+}
+
+a.pynotes_link:hover {
+  color: #0083dc;
+}
+
+.pynotes_button {
+  background-color: #29a9ff;
+}
+
+.pynotes_found, .pynotes_not_found {
+  width: 15em;
+  border: none;
+  color: #000000;
+}
+
+.pynotes_found {
+  background-color: #0bbf8c;
+}
+
+.pynotes_not_found {
+  background-color: #ADA6A6;
+  color: #000000;
+}
+
+.pynotes_overflow {
+  max-height: 150px;
+}
+
+.pynotes_note_link {
+  color: #0083dc;
+}
+
+a.pynotes_note_link:hover {
+  background-color: #29a9ff;
+  color: #fff;
+}
+
+.pynotes_note_edit {
+  background-color: #93d7b7;
+}
+
+a.pynotes_note_edit:hover {
+  background-color: #3fab79;
+  color: #fff;
+}
+
+.pynotes_note_delete {
+  background-color: #e46767;
+}
+
+a.pynotes_note_delete:hover {
+  background-color: #dc3c3c;
+  color: #fff;
+}
+
+.pynotes_pagination {
+  color: #29a9ff;
+  background-color: inherit;
+  border: 1px solid #29a9ff;
+}
+
+span.pynotes_pagination {
+    color: #fff;
+}
+
+.pynotes_pagination.disabled {
+  background-color: inherit;
+  color: #fff;
+  border: 1px solid #29a9ff;
+}
+
+a.pynotes_pagination:hover {
+  background-color: #29a9ff;
+  color: #fff;
+}

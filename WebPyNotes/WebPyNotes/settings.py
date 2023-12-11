@@ -5,7 +5,8 @@ from WebNotes_settings import NotesConfig
 BASE_DIR = Path(__file__).resolve().parents[1]
 SECRET_KEY = NotesConfig.get_django_secret_key()
 
-DEBUG = False
+# DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
 INSTALLED_APPS = [
@@ -74,10 +75,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os_path_join(BASE_DIR, 'static'),
+    os_path_join(BASE_DIR, 'static/'),
 ]
+STATIC_ROOT = os_path_join(BASE_DIR, '/static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
