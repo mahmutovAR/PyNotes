@@ -4,6 +4,7 @@ from os import system as os_system
 from os.path import join as os_path_join
 from pathlib import Path
 from run_demo import set_env_var
+from time import sleep
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -14,7 +15,7 @@ REST_DIR = os_path_join(SCRIPT_DIR, 'WebNotes_API')
 def app_tests():
     """Runs WebPyNotes tests."""
     os_chdir(RUNSERVER_DIR)
-    command = 'python manage.py test --verbosity 2'
+    command = 'python3 manage.py test --verbosity 2'
     os_system(command)
 
 
@@ -36,6 +37,7 @@ if __name__ == '__main__':
     os_system('kill $(lsof -i:5000 -t)')
 
     run_api_process.start()
+    sleep(1)
     app_tests_process.start()
     app_tests_process.join()
     run_api_process.terminate()
