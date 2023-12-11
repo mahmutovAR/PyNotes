@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h3>Note content:</h3>
 
-<p><a href="/webnotes/edit/{{ note_content.get_note_id }}/">Edit</a> |
-    <a href="/webnotes/delete/{{ note_content.get_note_id }}/">Delete</a></p>
-<p><strong>Title:</strong><br> {{ note_content.get_note_title }}</p>
+<p><a href="/webnotes/edit/{{ note_content.id }}/">Edit</a> |
+    <a href="/webnotes/delete/{{ note_content.id }}/">Delete</a></p>
+<p><strong>Title:</strong><br> {{ note_content.title }}</p>
 
-{% if note_content.get_note_text %}
-<p><strong>Text:</strong><br> {{ note_content.get_note_text }}</p>
+{% if note_content.text %}
+<p><strong>Text:</strong><br> {{ note_content.text }}</p>
 {% endif %}
 
 {% endblock %}

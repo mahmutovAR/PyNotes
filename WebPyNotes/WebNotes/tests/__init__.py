@@ -1,1 +1,1 @@
-from .config import MongoTestRunner, MongoTestCase
+from .settings import MongoTestRunner, MongoTestCase
