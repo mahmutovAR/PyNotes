@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="ps-1">
+  <h3>Welcome to <em>WebPyNotes</em></h3>
+
+  <p>The application provides the following functionality:</p>
+  <ul>
+    <li>Creating plain text notes</li>
+    <li>Saving notes to the MongoDB</li>
+    <li>Listing previously created notes</li>
+    <li>Editing previously created notes</li>
+  </ul>
+
+  <hr>
+  {% if total_notes %}
+  <p>The database contains <strong>{{ total_notes }}</strong> note{{ total_notes|pluralize }}</p>
+  {% else %}
+  <div class="alert pynotes_not_found" role="alert">
+    <p>No notes in database</p>
+  </div>
+  {% endif %}
+</div>
+
+
+{% endblock %}

@@ -3,17 +3,17 @@ class WebNotesMSG:
 
     def __init__(self):
         self.note_inserted = 'Note was inserted'
-        self.note_edited = 'Note was updated'
+        self.note_updated = 'Note was updated'
         self.note_deleted = 'Note was deleted'
         self.note_already_exists = 'Note with entered title already exists'
-        self.no_notes_in_db = 'No notes in current database'
+        self.no_notes_in_db = 'No notes in database'
         self.database_error = 'Database connection failed'
 
     def get_msg_note_inserted(self):
         return self.note_inserted
 
-    def get_msg_note_edited(self):
-        return self.note_edited
+    def get_msg_note_updated(self):
+        return self.note_updated
 
     def get_msg_note_deleted(self):
         return self.note_deleted

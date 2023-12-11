@@ -16,3 +16,11 @@ class MongoTestCase(TestCase):
 
     def _fixture_teardown(self):
         pass
+
+
+def format_url(input_url: str) -> str:
+    """Formats the input pattern into a test URL, by adding the leading slash."""
+    if input_url.startswith('/'):
+        return input_url
+    else:
+        return f'/{input_url}'

@@ -3,7 +3,7 @@ from os import environ
 
 class ConfigData:
     """Class with main application settings.
-    Django settings include the secret key.
+    Django's settings include the secret key.
     Database settings include the name, collection name, host."""
     __slots__ = ['__django_secret_key',
                  '__database_name', '__database_collection',
