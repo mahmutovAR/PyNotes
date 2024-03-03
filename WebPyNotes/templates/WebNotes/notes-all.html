@@ -3,14 +3,29 @@
 {% block content %}
 
 {% if notes_in_db %}
-<h3 class="text-center">{{ total_notes }} note{{ total_notes|pluralize}} in database</h3>
+<h3 class="text-center">{{ total_notes }} note{{ total_notes|pluralize }} in database</h3>
 
 <ol class="d-grid gap-3 ps-4" start="{{ start_page_num }}">
     {% for note in notes_in_db %}
     <li>
-        <a href="/webnotes/view/{{ note.id }}" class="align-baseline btn btn-sm me-2 pynotes_note_link" role="button" target="_blank">{{ note.title }}</a>
-        <a href="/webnotes/edit/{{ note.id }}" class="align-baseline btn btn-sm pynotes_note_edit" role="button" target="_blank">edit note</a>
-        <a href="/webnotes/delete/{{ note.id }}" class="align-baseline btn btn-sm pynotes_note_delete" role="button" target="_blank">delete note</a>
+        <a href="/webnotes/view/{{ note.id }}"
+           class="align-baseline btn btn-sm me-2 pynotes_note_link"
+           role="button"
+           target="_blank">
+            {{ note.title }}
+        </a>
+        <a href="/webnotes/edit/{{ note.id }}"
+           class="align-baseline btn btn-sm pynotes_note_edit"
+           role="button"
+           target="_blank">
+            edit note
+        </a>
+        <a href="/webnotes/delete/{{ note.id }}"
+           class="align-baseline btn btn-sm pynotes_note_delete"
+           role="button"
+           target="_blank">
+            delete note
+        </a>
     </li>
     {% endfor %}
 </ol>
@@ -18,17 +33,25 @@
 <ul class="pagination justify-content-center pb-3 gx-3">
     {% if notes_in_db.has_previous %}
     <li class="page-item">
-        <a href="?page=1" class="page-link pynotes_pagination">First</a>
+        <a href="?page=1" class="page-link pynotes_pagination">
+            First
+        </a>
     </li>
     <li class="page-item">
-        <a href="?page={{ notes_in_db.previous_page_number }}" class="page-link pynotes_pagination">Previous</a>
+        <a href="?page={{ notes_in_db.previous_page_number }}" class="page-link pynotes_pagination">
+            Previous
+        </a>
     </li>
     {% else %}
     <li class="page-item">
-        <a class="page-link disabled pynotes_pagination">First</a>
+        <a class="page-link disabled pynotes_pagination">
+            First
+        </a>
     </li>
     <li class="page-item">
-        <a class="page-link disabled pynotes_pagination">Previous</a>
+        <a class="page-link disabled pynotes_pagination">
+            Previous
+        </a>
     </li>
     {% endif %}
 
@@ -40,24 +63,34 @@
 
     {% if notes_in_db.has_next %}
     <li class="page-item">
-        <a href="?page={{ notes_in_db.next_page_number }}" class="page-link pynotes_pagination">Next</a>
+        <a href="?page={{ notes_in_db.next_page_number }}" class="page-link pynotes_pagination">
+            Next
+        </a>
     </li>
     <li class="page-item">
-        <a href="?page={{ notes_in_db.paginator.num_pages }}" class="page-link pynotes_pagination">Last</a>
+        <a href="?page={{ notes_in_db.paginator.num_pages }}" class="page-link pynotes_pagination">
+            Last
+        </a>
     </li>
     {% else %}
     <li class="page-item">
-        <a class="page-link disabled pynotes_pagination">Next</a>
+        <a class="page-link disabled pynotes_pagination">
+            Next
+        </a>
     </li>
     <li class="page-item">
-        <a class="page-link disabled pynotes_pagination">Last</a>
+        <a class="page-link disabled pynotes_pagination">
+            Last
+        </a>
     </li>
     {% endif %}
 </ul>
 
 {% else %}
 <div class="alert pynotes_not_found" role="alert">
-    No notes in database, nothing to display
+    <p class="m-0">
+        No notes in database, nothing to display
+    </p>
 </div>
 {% endif %}
 

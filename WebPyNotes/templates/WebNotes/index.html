@@ -18,10 +18,11 @@
   <p>The database contains <strong>{{ total_notes }}</strong> note{{ total_notes|pluralize }}</p>
   {% else %}
   <div class="alert pynotes_not_found" role="alert">
-    <p>No notes in database</p>
+    <p class="m-0">
+      No notes in database
+    </p>
   </div>
   {% endif %}
 </div>
-
 
 {% endblock %}

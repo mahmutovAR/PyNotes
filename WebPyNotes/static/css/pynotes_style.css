@@ -75,10 +75,18 @@ a.pynotes_link:hover {
   background-color: #29a9ff;
 }
 
+button.pynotes_button:hover {
+  background-color: #94D4FF;
+  color: #000000;
+}
+
 .pynotes_found, .pynotes_not_found {
   width: 15em;
   border: none;
   color: #000000;
+  text-align: start;
+  line-height: 1.5em;
+  height: auto;
 }
 
 .pynotes_found {
@@ -87,7 +95,6 @@ a.pynotes_link:hover {
 
 .pynotes_not_found {
   background-color: #ADA6A6;
-  color: #000000;
 }
 
 .pynotes_overflow {

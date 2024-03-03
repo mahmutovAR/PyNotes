@@ -2,20 +2,38 @@
 
 {% block content %}
 
+{% if note_content %}
 <p><strong>Title:</strong><br>{{ note_content.title }}</p>
 
 {% if note_content.text %}
 <p><strong>Text:</strong><br>{{ note_content.text }}</p>
 {% endif %}
 
-<p><em>Created:</em> {{ note_content.created }}</p>
+<p><em>created:&nbsp;&emsp;</em> {{ note_content.created }}</p>
 
-{% if note_content.edited %}
-<p><em>Edited:</em> {{ note_content.edited }}</p>
+{% if note_content.updated %}
+<p><em>updated:&emsp;</em> {{ note_content.updated }}</p>
 {% endif %}
 
 <hr>
-<a href="/webnotes/edit/{{ note_content.id }}" class="btn btn-sm pynotes_note_edit" role="button">edit note</a>
-<a href="/webnotes/delete/{{ note_content.id }}" class="btn btn-sm pynotes_note_delete" role="button">delete note</a>
+<a href="/webnotes/edit/{{ note_content.id }}"
+   class="btn btn-sm pynotes_note_edit"
+   role="button">
+  edit note
+</a>
+<a href="/webnotes/delete/{{ note_content.id }}"
+   class="btn btn-sm pynotes_note_delete"
+   role="button">
+  delete note
+</a>
+
+
+{% else %}
+  <div class="alert pynotes_not_found" role="alert">
+    <p class="m-0">
+      Note not found
+    </p>
+  </div>
+{% endif %}
 
 {% endblock %}
