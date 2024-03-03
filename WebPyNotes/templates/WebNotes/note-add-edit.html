@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+
+    {% csrf_token %}
+    <fieldset>
+        <legend>{{ form_legend }}</legend>
+        <label for="title" class="form-label">Title</label>
+        <input type="text" id="title" name="note_title" value="{{ title_field }}"
+               placeholder="required, {{ title_max }} characters max"
+               required
+               class="form-control text-white pynotes_form">
+        <br>
+        <label for="note" class="form-label">Text</label>
+        <textarea id="note" name="note_text" placeholder="optional, {{ text_max }} characters max"
+                  class="form-control text-white pynotes_form">{{ text_field }}</textarea>
+    </fieldset>
+
+    <button type="submit" class="btn my-2 pynotes_button">{{ button_value }}</button>
+
+    {% if note_already_exists %}
+    <div class="alert mt-3 pynotes_attention" role="alert" aria-relevant="all">
+        <p class="mb-0"><strong>Note with entered title already exists</strong><br>
+      You can
+      <a href="/webnotes/edit/{{ note_already_exists.id }}" class="btn btn-sm pynotes_note_edit" role="button" target="_blank">edit</a>
+      or
+    <a href="/webnotes/delete/{{ note_already_exists.id }}" class="btn btn-sm pynotes_note_delete" role="button" target="_blank">delete</a>
+      an existing note,<br>or change the title of a new one
+  </p>
+</div>
+    <p><strong>Title:</strong><br>{{ note_already_exists.title }}</p>
+
+{% if note_already_exists.text %}
+<p><strong>Text:</strong><br>{{ note_already_exists.text }}</p>
+{% endif %}
+
+<p><em>Created:</em> {{ note_already_exists.created }}</p>
+
+{% if note_already_exists.edited %}
+<p><em>Edited:</em> {{ note_already_exists.edited }}</p>
+{% endif %}
+     {% endif %}
+
+</form>
+
+{% endblock %}

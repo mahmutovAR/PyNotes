@@ -1,6 +1,8 @@
+from datetime import datetime
+from sys import argv as sys_argv
+
 from bson.objectid import ObjectId
 from flask import Flask, request, jsonify
-from sys import argv as sys_argv
 
 from WebPyNotes.WebNotes_settings import NotesAPI
 from database_settings import NOTES_DB, TEST_DB, format_fields
@@ -8,10 +10,10 @@ from database_settings import NOTES_DB, TEST_DB, format_fields
 app = Flask(__name__)
 
 
-API_URL = NotesAPI.get_api_url()
-API_URL_data_id = NotesAPI.get_api_url_data_id()
-API_URL_search = NotesAPI.get_api_url_search()
-TEST_API_URL = NotesAPI.get_test_api_url()
+API_URL = NotesAPI.get_api()
+API_URL_data_id = NotesAPI.get_api_data_id()
+API_URL_search = NotesAPI.get_api_search()
+TEST_API_URL = NotesAPI.get_test_api()
 
 
 if 'test' in sys_argv:
@@ -53,7 +55,9 @@ def add_note():
         if note_already_exists:
             return jsonify({'note_already_exists': format_fields(note_already_exists)}), 200
 
-        inserted_note_id = DATABASE.insert_doc_into_collection({'title': new_note_title, 'text': new_note_text})
+        inserted_note_id = DATABASE.insert_doc_into_collection({'title': new_note_title,
+                                                                'text': new_note_text,
+                                                                'created': get_current_datetime()})
         return jsonify({'note_already_exists': False,
                         'total_notes': DATABASE.get_count_of_all_docs(),
                         'inserted_note_id': inserted_note_id}), 201
@@ -75,7 +79,8 @@ def update_note(data_id):
         note_already_exists = DATABASE.get_doc_from_collection({'title': new_note_title})
         if not note_already_exists or note_already_exists['_id'] == current_note_id:
             DATABASE.update_doc_in_collection(note_id, {"$set": {'title': new_note_title,
-                                                                 'text': new_note_text}})
+                                                                 'text': new_note_text,
+                                                                 'edited': get_current_datetime()}})
             return jsonify({'note_already_exists': False, 'total_notes': DATABASE.get_count_of_all_docs()}), 201
 
         elif note_already_exists['_id'] != current_note_id:
@@ -115,6 +120,11 @@ def delete_test_data():
     """Additional test function, deletes all documents from the collection."""
     DATABASE.delete_all_docs_from_collection()
     return jsonify({'result': 'database is empty'}), 200
+
+
+def get_current_datetime() -> str:
+    """Return date and time in format: "day/month/year hour:minute"."""
+    return datetime.now().strftime("%d/%m/%Y %H:%M")
 
 
 if __name__ == '__main__':

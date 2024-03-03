@@ -1,7 +1,7 @@
 from unittest import TestCase
 from os import environ
 
-from WebNotes_settings import NotesConfig, EnvVarError, get_env_var
+from WebNotes_settings import EnvVarError, get_env_var
 
 
 class AppConfigTest(TestCase):

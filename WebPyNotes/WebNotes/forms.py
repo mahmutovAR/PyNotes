@@ -12,13 +12,13 @@ TEXT_MAX_VALUE_ERROR = f'Invalid text length: above {TEXT_MAX_LENGTH}'
 
 class TextNoteForm(forms.Form):
     """The main form of the application, contains a title and text (optional)."""
-    note_title = forms.CharField(label='Note title',
+    note_title = forms.CharField(label='Enter note title',
+                                 required=True,
                                  error_messages={'required': NO_TITLE_ERROR,
                                                  'max_length': TITLE_MAX_LENGTH_ERROR},
                                  validators=[MaxLengthValidator(TITLE_MAX_LENGTH)])
-    note_text = forms.CharField(label='Note text',
+    note_text = forms.CharField(label='Enter note text',
                                 required=False,
-                                widget=forms.Textarea,
                                 error_messages={'max_length': TEXT_MAX_VALUE_ERROR},
                                 validators=[MaxLengthValidator(TEXT_MAX_LENGTH)])
 
