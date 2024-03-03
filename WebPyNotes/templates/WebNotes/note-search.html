@@ -5,7 +5,9 @@
 {% if total_notes %}
 <form method="POST">
     {% csrf_token %}
-        <label for="search" class="form-label">Enter the note you are looking for</label>
+        <label for="search" class="form-label">
+            Enter the note you are looking for
+        </label>
         <input type="search"
                id="search"
                name="search_for"
@@ -23,14 +25,18 @@
 {% if title_results %}
     <div class="alert pynotes_found" role="alert">
   Found in the title:
+    </div>
 
-</div>
 <div class="overflow-scroll pynotes_overflow">
 <ol class="d-grid gap-2">
     {% for result in title_results %}
     <li>
-        <a href="/webnotes/view/{{ result.id  }}" class="align-baseline btn btn-sm pynotes_note_link" role="button" target="_blank">
-            {{ result.title }}</a>
+        <a href="/webnotes/view/{{ result.id  }}"
+           class="align-baseline btn btn-sm pynotes_note_link"
+           role="button"
+           target="_blank">
+            {{ result.title }}
+        </a>
     </li>
     {% endfor %}
 </ol>
@@ -51,17 +57,21 @@
 <ol class="d-grid gap-2">
     {% for result in text_results %}
     <li>
-        <a href="/webnotes/view/{{ result.id  }}" class="align-baseline btn btn-sm pynotes_note_link" role="button" target="_blank">
-            {{ result.title }}</a>
+        <a href="/webnotes/view/{{ result.id  }}"
+           class="align-baseline btn btn-sm pynotes_note_link"
+           role="button"
+           target="_blank">
+            {{ result.title }}
+        </a>
     </li>
     {% endfor %}
+
 </ol>
     </div>
 {% else %}
 <div class="alert pynotes_not_found" role="alert">
   Not found in texts
 </div>
-
 
 {% endif %}
 {% endif %}

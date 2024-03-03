@@ -11,7 +11,7 @@ TEXT_MAX_VALUE_ERROR = f'Invalid text length: above {TEXT_MAX_LENGTH}'
 
 
 class TextNoteForm(forms.Form):
-    """The main form of the application, contains a title and text (optional)."""
+    """The main form of the application, contains a title and text (optional) fields."""
     note_title = forms.CharField(label='Enter note title',
                                  required=True,
                                  error_messages={'required': NO_TITLE_ERROR,

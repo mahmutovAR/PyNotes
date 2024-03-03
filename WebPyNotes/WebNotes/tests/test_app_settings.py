@@ -1,7 +1,7 @@
 from unittest import TestCase
 from os import environ
 
-from WebNotes_settings import EnvVarError, get_env_var
+from WebPyNotes_settings import EnvVarError, get_env_var
 
 
 class AppConfigTest(TestCase):
@@ -15,9 +15,6 @@ class AppConfigTest(TestCase):
 
         self.valid_data = 'user value of Env Var'
         self.invalid_data = '  '
-        self.valid_host_1 = 'mongodb://127.0.0.1'
-        self.valid_host_2 = 'mongodb+srv://127.0.0.1'
-        self.invalid_host = 'errorDB//127.0.0.27:5000'
 
     def tearDown(self) -> None:
         environ.clear()
@@ -43,12 +40,6 @@ class AppConfigTest(TestCase):
 
         environ[self.env_var_database_collection] = self.valid_data
         get_env_var(self.env_var_database_collection)
-
-        environ[self.env_var_database_host] = self.valid_host_1
-        get_env_var(self.env_var_database_host)
-
-        environ[self.env_var_database_host] = self.valid_host_2
-        get_env_var(self.env_var_database_host)
         
     def test_invalid_env_var(self):
         """Tests raising of the EnvVarError if environment variable value is not valid."""
@@ -65,9 +56,5 @@ class AppConfigTest(TestCase):
             get_env_var(self.env_var_database_collection)
 
         environ[self.env_var_database_host] = self.invalid_data
-        with self.assertRaises(EnvVarError):
-            get_env_var(self.env_var_database_host)
-
-        environ[self.env_var_database_host] = self.invalid_host
         with self.assertRaises(EnvVarError):
             get_env_var(self.env_var_database_host)

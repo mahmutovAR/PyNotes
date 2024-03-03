@@ -1,11 +1,11 @@
 from os.path import join as os_path_join
 from pathlib import Path
-from WebNotes_settings import NotesConfig
+
+from WebPyNotes_settings import DJANGO_SECRET_KEY
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-SECRET_KEY = NotesConfig.get_django_secret_key()
+SECRET_KEY = DJANGO_SECRET_KEY
 
-# DEBUG = False
 DEBUG = True
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 

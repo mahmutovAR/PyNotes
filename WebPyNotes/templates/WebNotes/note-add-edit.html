@@ -20,26 +20,26 @@
 
     <button type="submit" class="btn my-2 pynotes_button">{{ button_value }}</button>
 
-    {% if note_already_exists %}
+    {% if title_is_taken %}
     <div class="alert mt-3 pynotes_attention" role="alert" aria-relevant="all">
         <p class="mb-0"><strong>Note with entered title already exists</strong><br>
       You can
-      <a href="/webnotes/edit/{{ note_already_exists.id }}" class="btn btn-sm pynotes_note_edit" role="button" target="_blank">edit</a>
+      <a href="/webnotes/edit/{{ title_is_taken.id }}" class="btn btn-sm pynotes_note_edit" role="button" target="_blank">edit</a>
       or
-    <a href="/webnotes/delete/{{ note_already_exists.id }}" class="btn btn-sm pynotes_note_delete" role="button" target="_blank">delete</a>
+    <a href="/webnotes/delete/{{ title_is_taken.id }}" class="btn btn-sm pynotes_note_delete" role="button" target="_blank">delete</a>
       an existing note,<br>or change the title of a new one
   </p>
 </div>
-    <p><strong>Title:</strong><br>{{ note_already_exists.title }}</p>
+    <p><strong>Title:</strong><br>{{ title_is_taken.title }}</p>
 
-{% if note_already_exists.text %}
-<p><strong>Text:</strong><br>{{ note_already_exists.text }}</p>
+{% if title_is_taken.text %}
+<p><strong>Text:</strong><br>{{ title_is_taken.text }}</p>
 {% endif %}
 
-<p><em>Created:</em> {{ note_already_exists.created }}</p>
+<p><em>Created:</em> {{ title_is_taken.created }}</p>
 
-{% if note_already_exists.edited %}
-<p><em>Edited:</em> {{ note_already_exists.edited }}</p>
+{% if title_is_taken.updated %}
+<p><em>Updated:</em> {{ title_is_taken.updated }}</p>
 {% endif %}
      {% endif %}
 
